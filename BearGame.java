@@ -10,21 +10,26 @@ public class BearGame {
         boolean hasBerry = false;
         boolean hasSalmon = false;
 
-        while (hasHoney == false && hasBerry == false && hasSalmon == false) {
+        intro();
 
-            intro();
+        while (true) {
+
             String input = scanner.nextLine();
+            //System.out.println(input);  //debug
 
-            if(input.toLowerCase() == "treetrunks") {
+            if(input.toLowerCase().equals("treetrunks")) {
                 hasHoney = treetrunks(hasHoney);
-
-            } else if(input.toLowerCase() == "underbrush") {
+            } else if(input.toLowerCase().equals("underbrush")) {
                 hasBerry = underbrush(hasBerry);
-            } else if(input.toLowerCase() == "river") {
+            } else if(input.toLowerCase().equals("river")) {
                 hasSalmon = river(hasSalmon);
+            } else if(input.toLowerCase().equals("den")) {
+                ending(hasHoney, hasBerry, hasSalmon);
+                break;
+            } else {
+                System.out.println("Huh? Where's that?");
             }
         }
-        ending();
     }
     static void intro() {
         System.out.println("You are a bear in the forest.");
@@ -33,6 +38,7 @@ public class BearGame {
         System.out.println("Treetrunks");
         System.out.println("Underbrush");
         System.out.println("River");
+        System.out.println("Den");
     }
     static boolean treetrunks(boolean visited) {
         if(visited == false) {
@@ -58,9 +64,15 @@ public class BearGame {
         } else {
             System.out.println("The salmon hear your approach and scatter away, leaving the river barren.");
         }
+        System.out.println("Where will you go next?");
         return true;
     }
-    static void ending() {
-        System.out.println("You lay in your den, full of yummy treats, and sleep away the winter.");
+    static void ending(boolean hasHoney, boolean hasBerry, boolean hasSalmon) {
+        if(hasBerry == true && hasHoney == true && hasSalmon == true) {
+            System.out.println("You lay in your den, full of yummy treats, and sleep away the winter.");
+            System.out.println("YOU WIN!");
+        } else {
+            System.out.println("You starve to death and die forever.");
+        }
     }
 }
