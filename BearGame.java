@@ -6,26 +6,39 @@ public class BearGame {
 
         Scanner scanner = new Scanner(System.in);
 
+        // tracks which areas player has visited
         boolean hasHoney = false;
         boolean hasBerry = false;
         boolean hasSalmon = false;
 
-        intro();
+        intro(); // prints possible inputs player can give; introduces game premise
 
         while (true) {
 
-            String input = scanner.nextLine();
+            // String input = scanner.nextLine();
+            // input = input.toLowerCase();
+            String input = scanner.nextLine().toLowerCase();
             //System.out.println(input);  //debug
 
-            if(input.toLowerCase().equals("treetrunks")) {
+            // calls methods for each location player can visit
+            // treetrunks location, sets honey to true
+            if(input.equals("treetrunks")) { 
                 hasHoney = treetrunks(hasHoney);
-            } else if(input.toLowerCase().equals("underbrush")) {
+
+            // underbrush location, sets berry to true
+            } else if(input.equals("underbrush")) {
                 hasBerry = underbrush(hasBerry);
-            } else if(input.toLowerCase().equals("river")) {
+
+            // river location, sets salmon to true
+            } else if(input.equals("river")) {
                 hasSalmon = river(hasSalmon);
-            } else if(input.toLowerCase().equals("den")) {
+
+            // den location, ends the game
+            } else if(input.equals("den")) {
                 ending(hasHoney, hasBerry, hasSalmon);
                 break;
+            
+            // in case player gives invalid input
             } else {
                 System.out.println("Huh? Where's that?");
             }
@@ -40,35 +53,38 @@ public class BearGame {
         System.out.println("River");
         System.out.println("Den");
     }
+
     static boolean treetrunks(boolean visited) {
-        if(visited == false) {
-            System.out.println("You assault the wasps from their trees, licking honey from the fallen nest.");
-        } else {
+        if(visited) {
             System.out.println("The wasp nest lays cracked and empty beside the tree.");
+        } else {
+            System.out.println("You assault the wasps from their trees, licking honey from the fallen nest.");
         }
         System.out.println("Where will you go next?");
-        return true;
+        return true; // set this location as visited
     }
     static boolean underbrush(boolean visited) {
-        if(visited == false) {
-            System.out.println("You crunch the hell out of some yummy berries.");
+        if(visited) {
+            System.out.println("The bushes are empty of berries.. You ate them all already. :()");
         } else {
-            System.out.println("The bushes are empty of berries.. You are them all before!");
+            System.out.println("You crunch the hell out of some yummy berries.");
         }
+        
         System.out.println("Where will you go next?");
-        return true;
+        return true; // set this location as visited
     }
     static boolean river(boolean visited) {
-        if(visited == false) {
-            System.out.println("You dive into the crashing waves and soon find your jaws full of fresh salmon.");
-        } else {
+        if(visited) {
             System.out.println("The salmon hear your approach and scatter away, leaving the river barren.");
+        } else {
+            System.out.println("You dive into the crashing waves and soon find your jaws full of fresh salmon.");
         }
+        
         System.out.println("Where will you go next?");
-        return true;
+        return true; // set this location as visited
     }
     static void ending(boolean hasHoney, boolean hasBerry, boolean hasSalmon) {
-        if(hasBerry == true && hasHoney == true && hasSalmon == true) {
+        if(hasBerry && hasHoney && hasSalmon) {
             System.out.println("You lay in your den, full of yummy treats, and sleep away the winter.");
             System.out.println("YOU WIN!");
         } else {
