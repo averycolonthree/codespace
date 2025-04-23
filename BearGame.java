@@ -13,7 +13,7 @@ public class BearGame {
 
         intro(); // prints possible inputs player can give; introduces game premise
 
-        while (true) {
+        while(true) {
 
             // String input = scanner.nextLine();
             // input = input.toLowerCase();

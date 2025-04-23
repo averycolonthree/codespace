@@ -14,7 +14,7 @@ public class WhileDemo {
         // this is fugly but its also easy
 
         Scanner scanner = new Scanner(System.in);
-        Random rand = new Random();
+        Random rand = new Random(1);
 
         System.out.println("Hark! A skeleton appears!");
 
@@ -28,12 +28,17 @@ public class WhileDemo {
             // Attacking beats Feinting
             // Feinting beats Dodging
             // Dodging beats Attacking
-            System.out.println(enemyPredictMove(enemyMove));
-            scoreboard(health);
 
+            // Display text corresponding to next move enemy will use
+            System.out.println(enemyPredictMove(enemyMove));
+            // Show "scoreboard" (player & enemy health + controls)
+            scoreboard(health);
+            // Take player input, used in battle method
             String playerMove = scanner.next().toUpperCase();
 
             health = battle(health, playerMove, enemyMove);
+            
+            // Win case
             if(health[1] == 0) {
                 System.out.println("You defeat the mighty skeleton!");
                 health[0] = 0;
@@ -41,6 +46,7 @@ public class WhileDemo {
         }
     }
     
+    // Display basic info about game (Health & controls)
     static void scoreboard(int[] health) {
         System.out.println("Player HP: " + health[0]);
         System.out.println("Enemy HP: " + health[1]);
@@ -49,6 +55,8 @@ public class WhileDemo {
     }
     
     static int[] battle(int[] health, String playerMove, int enemyMove) {
+
+        // TODO - Major bug, if player inputs anything else, it rerolls skeleton attacks.
         
         // player attacking cases
         if(playerMove.equals("A")) {
