@@ -9,18 +9,20 @@ import java.util.Random;
 public class WhileDemo {
     public static void main(String[] args) {
 
-        int[] health = {5,5};
-        // first is player, second is enemy
-        // this is fugly but its also easy
+        System.out.println("Hark! A skeleton appears!");
 
         Scanner scanner = new Scanner(System.in);
         Random rand = new Random(1);
+        Player player = new Player();
+        Enemy enemy = new Enemy();
 
-        System.out.println("Hark! A skeleton appears!");
+        Health health = new Health();
+        health.setEnemyHealth(5);
+        health.setPlayerHealth(5);
 
-        while(health[0] > 0) {
+        while(health.getPlayerHealth() > 0 && health.getEnemyHealth() > 0) {
             
-            int enemyMove = rand.nextInt(3);
+            enemy.setMove(rand.nextInt(3));
             // 0 = Attack
             // 1 = Feint
             // 2 = Dodge
@@ -30,36 +32,40 @@ public class WhileDemo {
             // Dodging beats Attacking
 
             // Display text corresponding to next move enemy will use
-            System.out.println(enemyPredictMove(enemyMove));
-            // Show "scoreboard" (player & enemy health + controls)
-            scoreboard(health);
-            // Take player input, used in battle method
-            String playerMove = scanner.next().toUpperCase();
+            System.out.println(enemyPredictMove(enemy.getMove()));
 
-            health = battle(health, playerMove, enemyMove);
+            // Show "scoreboard" (player & enemy health + controls)
+            scoreboard(health.getPlayerHealth(), health.getEnemyHealth());
+
+            // Take player input, used in battle method
+            player.setMove(scanner.next().toUpperCase());
+
+            health = battle(player.getMove(), enemy.getMove(), health);
             
-            // Win case
-            if(health[1] == 0) {
-                System.out.println("You defeat the mighty skeleton!");
-                health[0] = 0;
-            }
+        }
+
+        if(health.getPlayerHealth() <= 0) {
+            System.out.println("Better luck next time!");
+        } else {
+            System.out.println("You defeated the skeleton!");
         }
     }
     
     // Display basic info about game (Health & controls)
-    static void scoreboard(int[] health) {
-        System.out.println("Player HP: " + health[0]);
-        System.out.println("Enemy HP: " + health[1]);
+    static void scoreboard(int playerHealth, int enemyHealth) {
+        System.out.println("Player HP: " + playerHealth);
+        System.out.println("Enemy HP: " + enemyHealth);
         System.out.println("What will you do?");
         System.out.println("A to Attack. F to Feint. D to Dodge.");
     }
     
-    static int[] battle(int[] health, String playerMove, int enemyMove) {
+    static Health battle(String playerMove, int enemyMove, Health health) {
 
         // TODO - Major bug, if player inputs anything else, it rerolls skeleton attacks.
+        // Fixed by making Dodging a fallback move, but I do wish there was a better way..
         
-        // player attacking cases
-        if(playerMove.equals("A")) {
+        
+        if(playerMove.equals("A")) { // player attacking cases
             // Draw - player & enemy attack
             if(enemyMove == 0) {
                 System.out.println("You both attack, swords clashing.");
@@ -67,22 +73,19 @@ public class WhileDemo {
             // Win - player attacks, enemy feints
             } else if(enemyMove == 1) {
                 System.out.println("You spear the skeleton's bones before it can try to feint!");
-                health[1]--;
+                health.setEnemyHealth(health.getEnemyHealth()-1);
                 return health;
             // Loss - player attacks, enemy dodges
             } else {
                 System.out.println("You try to attack, but the skeleton dodges and counters!");
-                health[0]--;
+                health.setPlayerHealth(health.getPlayerHealth()-1);
                 return health;
             }
-        }
-
-        // player feinting cases
-        if(playerMove.equals("F")) {
+        } else if(playerMove.equals("F")) { // player feinting cases
             // Lose - player feints, enemy attacks
             if(enemyMove == 0) {
                 System.out.println("You try to feint, but the skeleton catches you and attacks!");
-                health[0]--;
+                health.setPlayerHealth(health.getPlayerHealth()-1);
                 return health;
             // Draw - player feints, enemy feints
             } else if(enemyMove == 1) {
@@ -91,31 +94,32 @@ public class WhileDemo {
             // Win - player feints, enemy dodges
             } else {
                 System.out.println("You feint and jab the skeleton out before it can dodge!");
-                health[1]--;
+                health.setEnemyHealth(health.getEnemyHealth()-1);
                 return health;
             }
-        }
-
-        // player dodging cases
-        if(playerMove.equals("D")) {
+        } else  { // player dodging cases
             // Win - player dodges, enemy attacks
             if(enemyMove == 0) {
                 System.out.println("You dodge before the skeleton can get you, and it trips!");
-                health[1]--;
+                health.setEnemyHealth(health.getEnemyHealth()-1);
                 return health;
             // Loss - player dodges, enemy feints
             } else if(enemyMove == 1) {
                 System.out.println("You try to dodge, but the skeleton predicts your move and counters with a feint!");
-                health[0]--;
+                health.setPlayerHealth(health.getPlayerHealth()-1);
                 return health;
             // Draw - player dodges, enemy dodges
             } else {
                 System.out.println("You both dodge eachother. Nothing happens.");
                 return health;
             }
+        } //else {
+          //  System.out.println("Wrong!");
+          //  health.setPlayerHealth(-999999999);
+          //  System.out.println("Player health: " + health.getPlayerHealth());
+          //  return health;
         }
-        return health;
-    }
+    
 
     static String enemyPredictMove(int enemyMove) {
         // we do this exact logic in battle(), but i don't know how i'd get around that
