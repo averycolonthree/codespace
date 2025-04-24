@@ -17,7 +17,7 @@ public class PlanetGenerator {
 
   }
   // generate planet characteristics
-  public static int[] makePlanet(Random rand) {
+  static void makePlanet(Random rand) {
 
     // make temp by rolling 2 odds and averaging them
     int hot1 = rand.nextInt(150) + 100;    // evil statistics hacking
@@ -25,11 +25,11 @@ public class PlanetGenerator {
     int temp = (hot1 + hot2)/2 - 150;
 
     // make gravity between 0.1x-3x gravity on Earth
-    double gravity = rand.nextInt((30) + 1)/10;  
+    double gravity = Math.floor(rand.nextDouble()*300) / 10;  
 
     // generate odds of rings or tidal locking
-    int hasRings = rand.nextInt(100)+1;
-    int isTidalLocked = rand.nextInt(100)+1;
+    int hasRings = rand.nextInt(5)+1;
+    int isTidalLocked = rand.nextInt(5)+1;
     
     System.out.println("Planet:");
     System.out.println("Surface temp: " + temp + "C");
