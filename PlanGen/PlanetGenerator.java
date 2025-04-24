@@ -7,7 +7,7 @@ public class PlanetGenerator {
     
     Random rand = new Random();
     Scanner scanner = new Scanner(System.in);
-    boolean planetIsSmall = rand.nextInt(2) == 1; // declared here to make debugging easier
+    String planetType = planetIsSmall();
     
     System.out.println("How many planets to make?");
     String numPlanets = scanner.nextLine();
@@ -15,6 +15,8 @@ public class PlanetGenerator {
     // checks that the input is not a number
     if(!Character.isDigit(numPlanets.charAt(0))) {
 
+      // going thru possible inputs
+      // there's gotta be a jollier way of doing this
         if(numPlanets.equals("temp")) {
           for(int i = 0; i < 100; i++) {
             System.out.println(temp());
@@ -24,30 +26,32 @@ public class PlanetGenerator {
             System.out.println(gravity());
           }
         } else if(numPlanets.equals("moon")) {
-          System.out.println(moon());
+          for(int i = 0; i < 100; i++) {
+            System.out.println(moon());
+          }
+        }
+      } else {
+        for(int i = 0; i < Integer.valueOf(numPlanets); i++) {
+      
+          System.out.println("========"); // divider
+          System.out.println("Planet:");
+          System.out.println("Type of planet: " + planetType);
+          System.out.println("Surface temp: " + temp() + "C");
+          System.out.println("Gravity: " + gravity + "g");
+          System.out.println("Amount of moons: " + moonCount);
+          if(hasRings) {
+            System.out.println("Planet has rings.");
+          }
+          if(isTidalLocked) {
+            System.out.println("Planet is tidally locked.");
+          }
         }
       }
-    } else {
-    for(int i = 0; i < Integer.valueOf(numPlanets); i++) {
-      
-      System.out.println("========"); // divider
-      System.out.println("Planet:");
-      System.out.println("Type of planet: " + planetType);
-      System.out.println("Surface temp: " + temp + "C");
-      System.out.println("Gravity: " + gravity + "g");
-      System.out.println("Amount of moons: " + moonCount);
-
-      if(hasRings) {
-        System.out.println("Planet has rings.");
-      }
-
-      if(isTidalLocked) {
-        System.out.println("Planet is tidally locked.");
-      }
     }
-
-  }
   // generate planet characteristics
+  static void temp(Random rand, )
+
+
   static void makePlanet(Random rand, boolean planetIsSmall) {
 
     // setting bounds for if planet is small or big
