@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "scratchpad",
+            "request": "launch",
+            "mainClass": "scratchpad",
+            "projectName": "codespace_6299e797"
+        },
+        {
+            "type": "java",
             "name": "PlanetGenerator",
             "request": "launch",
             "mainClass": "PlanetGenerator.PlanetGenerator",
