@@ -6,6 +6,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "PlanetGenerator",
+            "request": "launch",
+            "mainClass": "PlanetGenerator.PlanetGenerator",
+            "projectName": "codespace_6299e797"
+        },
+        {
+            "type": "java",
+            "name": "PlanetGenerator",
+            "request": "launch",
+            "mainClass": "PlanetGenerator",
+            "projectName": "codespace_6299e797"
+        },
+        {
+            "type": "java",
             "name": "WhileDemo",
             "request": "launch",
             "mainClass": "WhileDemo",

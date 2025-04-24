@@ -9,6 +9,9 @@ import java.util.Random;
 public class WhileDemo {
     public static void main(String[] args) {
 
+        // TODO - Better fix for input bug  - Refactor Enemy and Player to use one Input object
+        // Enemy will map to strings by using indexOf("ADF").
+
         System.out.println("Hark! A skeleton appears!");
 
         Scanner scanner = new Scanner(System.in);
@@ -61,7 +64,7 @@ public class WhileDemo {
     
     static Health battle(String playerMove, int enemyMove, Health health) {
 
-        // TODO - Major bug, if player inputs anything else, it rerolls skeleton attacks.
+        // Major bug, if player inputs anything else, it rerolls skeleton attacks.
         // Fixed by making Dodging a fallback move, but I do wish there was a better way..
         
         
