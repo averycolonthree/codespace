@@ -18,10 +18,6 @@ public class PlanetGenerator {
     System.out.println("How many planets to make?");
     String numPlanets = scanner.nextLine();
 
-    // checks that the input is not a number
-    if (!Character.isDigit(numPlanets.charAt(0))) {
-      debugMode(numPlanets, rand, scanner);
-    } else {
       for (int i = 0; i < Integer.valueOf(numPlanets); i++) {
 
         if (rand.nextInt(2) == 1) {
@@ -50,8 +46,6 @@ public class PlanetGenerator {
         isTidalLocked(rand);
       }
     }
-  }
-
   // generate planet characteristics
   static int temp(Random rand) {
 
