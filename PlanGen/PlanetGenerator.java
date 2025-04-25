@@ -2,129 +2,89 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class PlanetGenerator {
-  
-  public static void main(String[] args){
-    
+
+  // setting bounds for if planet is small or big
+  static int TEMP_BOUND;
+  static int GRAVITY_BOUND;
+  static int MOONS_BOUND;
+  static int RINGS_BOUND;
+  static String PLANET_TYPE;
+
+  public static void main(String[] args) {
+
     Random rand = new Random();
     Scanner scanner = new Scanner(System.in);
 
-     // setting bounds for if planet is small or big
-     int tempBound;
-     int gravityBound;
-     int moonsBound;
-     int ringsBound;
-     String planetType;
- 
-     if(rand.nextInt(2) == 1) {
-      // rocky planets like Earth
-       tempBound = 300;
-       gravityBound = 300;
-       moonsBound = 10;
-       ringsBound = 20;
-       planetType = "rocky";
-     } else {
-      // gas giants like Jupiter
-       tempBound = 5000;
-       gravityBound = 2500;
-       moonsBound = 300;
-       ringsBound = 2;
-       planetType = "gaseous";
-     }
-    
     System.out.println("How many planets to make?");
     String numPlanets = scanner.nextLine();
 
     // checks that the input is not a number
-    if(!Character.isDigit(numPlanets.charAt(0))) {
+    if (!Character.isDigit(numPlanets.charAt(0))) {
+      debugMode(numPlanets, rand, scanner);
+    } else {
+      for (int i = 0; i < Integer.valueOf(numPlanets); i++) {
 
-      // going thru possible inputs
-      // there's gotta be a jollier way of doing this
-        if(numPlanets.equals("temp")) {
-          for(int i = 0; i < 100; i++) {
-            System.out.println(temp(rand, tempBound));
-          }
-        } else if(numPlanets.equals("gravity")) {
-          for(int i = 0; i < 100; i++) {
-            System.out.println(gravity(rand, gravityBound));
-          }
-        } else if(numPlanets.equals("moon")) {
-          for(int i = 0; i < 100; i++) {
-            System.out.println(moons(rand, moonsBound));
-          }
+        if (rand.nextInt(2) == 1) {
+          // rocky planets like Earth
+          TEMP_BOUND = 300;
+          GRAVITY_BOUND = 300;
+          MOONS_BOUND = 10;
+          RINGS_BOUND = 20;
+          PLANET_TYPE = "rocky";
+        } else {
+          // gas giants like Jupiter
+          TEMP_BOUND = 250;
+          GRAVITY_BOUND = 2500;
+          MOONS_BOUND = 300;
+          RINGS_BOUND = 2;
+          PLANET_TYPE = "gaseous";
         }
-      } else {
-        for(int i = 0; i < Integer.valueOf(numPlanets); i++) {
-      
-          System.out.println("========"); // divider
-          System.out.println("Planet:");
-          System.out.println("Type of planet: " + planetType);
-          System.out.println("Surface temp: " + temp(rand, tempBound) + "C");
-          System.out.println("Gravity: " + gravity(rand, gravityBound) + "g");
-          System.out.println("Amount of moons: " + moons(rand, moonsBound));
-          hasRings(rand, ringsBound);
-          isTidalLocked(rand);
-        }
+
+        System.out.println("========"); // divider
+        System.out.println("Planet:");
+        System.out.println("Type of planet: " + PLANET_TYPE);
+        System.out.println("Surface temp: " + temp(rand) + "C");
+        System.out.println("Gravity: " + gravity(rand) + "g");
+        System.out.println("Amount of moons: " + moons(rand));
+        hasRings(rand);
+        isTidalLocked(rand);
       }
     }
+  }
+
   // generate planet characteristics
-  static String temp(Random rand, int bound) {
-    return "Dummy";
-  }
+  static int temp(Random rand) {
 
-  static String gravity(Random rand, int bound) {
-    return "Dummy";
-  }
-
-  static String moons(Random rand, int bound) {
-    return "Dummy";
-  }
-
-  static String hasRings(Random rand, int bound) {
-    return "Dummy";
-  }
-  
-  static String isTidalLocked(Random rand) {
-    return "Dummy";
-  }
-
-  static void makePlanet(Random rand, boolean planetIsSmall, int tempBound, int gravityBound, int moonsBound, int ringsBound, String planetType) {
-
-    
-    // make temp by rolling 2 odds and averaging them
-    int temp = Math.max(-274, ((rand.nextInt(tempBound) + 100) + (rand.nextInt(tempBound) + 100))/2 - 150);
-
-    // set gravity 
-    double gravity = Math.floor(rand.nextDouble()*gravityBound) / 100;  
-    
-    // set moons
-    int moonCount;
-    if(planetIsSmall) {
-      moonCount = Math.max
-      (0, ((rand.nextInt(moonsBound) - 5) + (rand.nextInt(moonsBound) - 5))/2);
+    if (PLANET_TYPE.equals("rocky")) {
+      return Math.max(-250, ((rand.nextInt(TEMP_BOUND) + 100) + (rand.nextInt(TEMP_BOUND) + 100)) / 2 - 150);
     } else {
-      moonCount = rand.nextInt(moonsBound);
+      return Math.max(-250, rand.nextInt(TEMP_BOUND) - 250);
     }
+  }
 
-    // generate odds of rings or tidal locking
-    boolean hasRings = rand.nextInt(ringsBound)+1 == 1;
+  static double gravity(Random rand) {
+    double gravity = Math.floor(rand.nextDouble() * GRAVITY_BOUND) / 100;
+    return gravity;
+  }
 
-    boolean isTidalLocked = rand.nextInt(15)+1 == 1;
-    
-    // printing info
-    System.out.println("Planet:");
-    System.out.println("Type of planet: " + planetType);
-    System.out.println("Surface temp: " + temp + "C");
-    System.out.println("Gravity: " + gravity + "g");
-    System.out.println("Amount of moons: " + moonCount);
+  static int moons(Random rand) {
+    if (PLANET_TYPE.equals("rocky")) {
+      return Math.max(0, ((rand.nextInt(MOONS_BOUND) - 5) + (rand.nextInt(MOONS_BOUND) - 5)) / 2);
+    } else {
+      return rand.nextInt(MOONS_BOUND);
+    }
+  }
 
-    if(hasRings) {
+  static void hasRings(Random rand) {
+    if (rand.nextInt(RINGS_BOUND) + 1 == 1) {
       System.out.println("Planet has rings.");
     }
+  }
 
-    if(isTidalLocked) {
+  static void isTidalLocked(Random rand) {
+    if (rand.nextInt(15) + 1 == 1) {
       System.out.println("Planet is tidally locked.");
     }
-    
   }
 
 }
