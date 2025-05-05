@@ -9,7 +9,7 @@ public class PlanetGeneratorRev {
         double radius = countLowest(2, 191700-1900, rand) + 1900;
         double surfaceTemp = surfaceTemp(orbitPeriod, rand);
 
-        printPlanet(orbitPeriod, radius);
+        printPlanet(orbitPeriod, radius, surfaceTemp);
         }
     }
     
@@ -56,11 +56,19 @@ public class PlanetGeneratorRev {
     }    
 
     static double surfaceTemp(double orbitPeriod, Random rand) {
-        
+        double boltzmannConstant = 5.670373e-8;
+        //double luminosity = rand.nextDouble()*10e27; // meh
+        double luminosity = 3.846e26;
+        double albedo = 0.29;
+        //double distance = orbitPeriod*luminosity/100000;
+        double distance = 149e9;
+
+        return Math.pow(((luminosity*(1-albedo))/(16*Math.PI)*Math.pow(distance, 2)*boltzmannConstant), 1.0/4.0);
     }
 
-    static void printPlanet(double orbitPeriod, double radius) {
+    static void printPlanet(double orbitPeriod, double radius, double surfaceTemp) {
         System.out.println("Orbital period: " + orbitPeriod + " days");
         System.out.println("Radius: " + radius + " km");
+        System.out.println("Average surface temperature: " + surfaceTemp + "K");
     }
 }
