@@ -1,9 +1,17 @@
 import java.util.Random;
 
+// this file is getting fucking huge
 public class PlanetGeneratorRev {
     
     static final double BOLTZMANN_CONSTANT = 5.670373e-8;
-    static final double NEWTON_CONSTANT = 6.67e-11;
+    static final double NEWTON_CONSTANT = 6.6743e-11;
+    
+    // kelvin, wattage, standard imperial
+    static final double SOLAR_TEMPERATURE = 5778;
+    static final double SOLAR_LUMINOSITY = 3.828e30;
+    static final double SOLAR_RADIUS = 695700;
+    static final double SOLAR_MASS = 1.988416e30;
+
     public static void main(String[] args) {
 
         Random rand = new Random(1);
@@ -14,19 +22,16 @@ public class PlanetGeneratorRev {
             doStarThings(star, rand);
 
             // range 0.1-10000
-            double orbitPeriod = Math.round((countLowest(12, 100000, rand)*10)/10); 
-            orbitPeriod = orbitPeriod/10;
+            double orbitPeriod = countLowest(12, 10000, rand);
 
             int radius = (int) countLowest(2, 191700-1900, rand) + 1900;
 
-            double mass = Math.round((countLowest(12, 4134.0-0.0041, rand) + 0.0041)*100);
+            double mass = countLowest(12, 4134.0-0.0041, rand) + 0.0041;
             mass = mass/100;
 
-            double gravity = Math.round(gravity(radius, mass)*10);
-            gravity = gravity/10;
+            double gravity = gravity(radius, mass);
 
-            double surfaceTemp = Math.round(surfaceTemp(orbitPeriod, star, rand)*100);
-            surfaceTemp = surfaceTemp/100;
+            double surfaceTemp = surfaceTemp(orbitPeriod, star, rand);
 
             printPlanet(star, orbitPeriod, radius, mass, gravity, surfaceTemp);
         }
@@ -47,7 +52,7 @@ public class PlanetGeneratorRev {
             }
 
             output = output/loopCount;
-            return (Math.round(output*100.0))/100.0;
+            return output;
         }
     
     // rolls numDice numbers within given bound and returns the highest one
@@ -79,40 +84,37 @@ public class PlanetGeneratorRev {
     // set the values necessary for a star
     static void doStarThings(Star star, Random rand) {
 
-        double solarTemp = 5778;
-        double solarRadius = 695700;
+        star.setTemperature(countLowest(5, 18000-2300, rand)+2300);
 
-        double temp = countLowest(5, 18000-2300, rand)+2300;
-        star.setTemperature(temp);
-
-        int radius = (rand.nextInt(100)*695700)/10;
-        star.setRadius(radius);
+        star.setRadius((rand.nextInt(100)*695700)/100); // TODO: cant generate more than 1
 
         //double luminosity = BOLTZMANN_CONSTANT*((4*Math.PI)*(radius*radius))*Math.pow(temp, 4);
         double luminosity = 
-            (Math.pow((radius/solarRadius), 2)*Math.pow((temp/solarTemp), 4));
-        star.setLuminosity(Math.round(luminosity*100));
+            (Math.pow(
+                (star.getRadius()/SOLAR_RADIUS), 2)
+                *Math.pow(
+                    (star.getTemp()/SOLAR_TEMPERATURE), 4)
+                )*SOLAR_LUMINOSITY;
+        star.setLuminosity(luminosity);
 
         double mass = Math.pow(luminosity, 1/3.5);
-        star.setMass(Math.round(mass*100));
+        star.setMass(mass);
     }
 
     // use some bs to calculate an average surface temp for a planet
     static double surfaceTemp(double orbitPeriod, Star star, Random rand) {
         
-        double luminosity = star.getLuminosity()*3.828e26;
+        double luminosity = star.getLuminosity();
         double albedo = rand.nextInt(100)/100;
-        orbitPeriod = orbitPeriod*86400;
+        orbitPeriod = orbitPeriod*86400; // conversion to seconds instead of days
 
         //double minDist = 124764624.164;
         //double maxDist = 1.7951744e15;
         // https://hackanexoplanet.esa.int/challenges-orbital-period-and-distance/
         double distance = 
             Math.cbrt(
-                (NEWTON_CONSTANT*(star.getMass()*3.90e30))/
-                (4*Math.pow(Math.PI, 2))*(orbitPeriod*orbitPeriod));
-                
-        System.out.println("ohhhh my godddddddddddddddddddddddd" + distance);
+                ((NEWTON_CONSTANT*(star.getMass()*SOLAR_MASS))/
+                (4*Math.pow(Math.PI, 2)))*(orbitPeriod*orbitPeriod));
 
         // https://astronomy.stackexchange.com/questions/10113/ formula
         double temp = Math.pow(
@@ -123,20 +125,43 @@ public class PlanetGeneratorRev {
     }
 
     // slightly off i don't know why
+    // uhhh generates gravity in g's, remove *0.107 for grav in m/s^2
     static double gravity(double radius, double mass) {
         double earthMass = 5.972168e24;
         mass = mass * earthMass; // conversion to kg
         return ((NEWTON_CONSTANT*mass/(radius*radius))/1000000)*0.107;
     }
 
-    static void printPlanet(Star star, double orbitPeriod, int radius, double mass, double gravity, double surfaceTemp) {
+    // kept repeating this logic in 10 billion messy places so i cleaned up and made a method
+    // rounds given double to given decimal places
+    static double roundToDecimal(double num, int decimals) {
+
+        double decimalPow = Math.pow(10, decimals);
+        num = Math.round(num*decimalPow);
+        num = num/decimalPow;
+        return num;
+    }
+
+    static void printPlanet
+    (Star star, double orbitPeriod, int radius, double mass, double gravity, double surfaceTemp) {
+
+        // output yayyyy :3
         System.out.println("===================");
         System.out.println("    > Star");
-        System.out.println("Surface temperature: " + (int) star.getTemp() + " K");
-        System.out.println("Radius: " + star.getRadius() + " km");
-        System.out.println("Luminosity: " + star.getLuminosity()/100 + " L⨀");
-        System.out.println("Mass: " + star.getMass()/100 + " M⨀");
-        System.out.println("    > Planet");
+        System.out.println("Surface temperature: " + roundToDecimal(star.getTemp(), 2) +
+         " K / " + roundToDecimal(star.getTemp()/SOLAR_TEMPERATURE, 3) + " T⨀");
+
+        System.out.println("Radius: " + star.getRadius() +
+         " km / " + star.getRadius()/SOLAR_RADIUS + " R⨀");
+
+        System.out.println("Luminosity: " + 
+        star.getLuminosity() +
+         " W / " + roundToDecimal(star.getLuminosity()/SOLAR_LUMINOSITY, 3) + " L⨀");
+
+        System.out.println("Mass: " + roundToDecimal(star.getMass(), 1) + 
+        " kg / " + roundToDecimal(star.getMass()/SOLAR_MASS, 1) + " M⨀");
+
+        System.out.println("    > Planet 1");
         System.out.println("Orbital period: " + orbitPeriod + " days");
         System.out.println("Radius: " + radius + " km");
         System.out.println("Mass: " + mass + " M🜨");
