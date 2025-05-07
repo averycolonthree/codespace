@@ -14,10 +14,10 @@ public class PlanetGeneratorRev {
 
     public static void main(String[] args) {
 
-        Random rand = new Random(1);
+        Random rand = new Random(2);
         Star star = new Star();
 
-        for(int i = 0; i < 10; i++) {
+        for(int i = 0; i < 1; i++) {
 
             doStarThings(star, rand);
 
@@ -26,8 +26,7 @@ public class PlanetGeneratorRev {
 
             int radius = (int) countLowest(2, 191700-1900, rand) + 1900;
 
-            double mass = countLowest(12, 4134.0-0.0041, rand) + 0.0041;
-            mass = mass/100;
+            double mass = countLowest(15, 4134.0-0.0041, rand) + 0.0041;
 
             double gravity = gravity(radius, mass);
 
@@ -86,18 +85,15 @@ public class PlanetGeneratorRev {
 
         star.setTemperature(countLowest(5, 18000-2300, rand)+2300);
 
-        star.setRadius((rand.nextInt(100)*695700)/100); // TODO: cant generate more than 1
+        star.setRadius(((countLowest(3, 600-70, rand)+70)*SOLAR_RADIUS)/100);
 
-        //double luminosity = BOLTZMANN_CONSTANT*((4*Math.PI)*(radius*radius))*Math.pow(temp, 4);
-        double luminosity = 
-            (Math.pow(
-                (star.getRadius()/SOLAR_RADIUS), 2)
-                *Math.pow(
-                    (star.getTemp()/SOLAR_TEMPERATURE), 4)
-                )*SOLAR_LUMINOSITY;
+        //double luminosity = BOLTZMANN_CONSTANT*((4*Math.PI)*(star.getRadius()*star.getRadius()))*Math.pow(star.getTemp(), 4);
+        double luminosity = Math.pow((star.getRadius()/SOLAR_RADIUS), 2)
+                            *Math.pow((star.getTemp()/SOLAR_TEMPERATURE), 4)
+                            *SOLAR_LUMINOSITY;
         star.setLuminosity(luminosity);
 
-        double mass = Math.pow(luminosity, 1/3.5);
+        double mass = Math.pow(luminosity, 1/3.5); // TODO fix this shit, completely inaccurate and i dont know why
         star.setMass(mass);
     }
 
@@ -151,21 +147,20 @@ public class PlanetGeneratorRev {
         System.out.println("Surface temperature: " + roundToDecimal(star.getTemp(), 2) +
          " K / " + roundToDecimal(star.getTemp()/SOLAR_TEMPERATURE, 3) + " T⨀");
 
-        System.out.println("Radius: " + star.getRadius() +
-         " km / " + star.getRadius()/SOLAR_RADIUS + " R⨀");
+        System.out.println("Radius: " + roundToDecimal(star.getRadius(), 1) +
+         " km / " + roundToDecimal(star.getRadius()/SOLAR_RADIUS, 2) + " R⨀");
 
-        System.out.println("Luminosity: " + 
-        star.getLuminosity() +
+        System.out.println("Luminosity: " + star.getLuminosity() +
          " W / " + roundToDecimal(star.getLuminosity()/SOLAR_LUMINOSITY, 3) + " L⨀");
 
         System.out.println("Mass: " + roundToDecimal(star.getMass(), 1) + 
-        " kg / " + roundToDecimal(star.getMass()/SOLAR_MASS, 1) + " M⨀");
+        " kg / " + star.getMass()/SOLAR_MASS + " M⨀");
 
         System.out.println("    > Planet 1");
-        System.out.println("Orbital period: " + orbitPeriod + " days");
+        System.out.println("Orbital period: " + roundToDecimal(orbitPeriod, 2) + " days");
         System.out.println("Radius: " + radius + " km");
-        System.out.println("Mass: " + mass + " M🜨");
-        System.out.println("Gravity: " + gravity + " g");
-        System.out.println("Average surface temperature: " + surfaceTemp + " K");
+        System.out.println("Mass: " + roundToDecimal(mass, 3) + " M🜨");
+        System.out.println("Gravity: " + roundToDecimal(gravity, 2) + " g");
+        System.out.println("Average surface temperature: " + roundToDecimal(surfaceTemp, 1) + " K");
     }
 }

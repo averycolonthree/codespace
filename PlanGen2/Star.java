@@ -2,7 +2,7 @@ public class Star {
 
     private double temperature;
     private double luminosity;
-    private int radius;
+    private double radius;
     private double mass;
 
     // getters
@@ -14,7 +14,7 @@ public class Star {
         return luminosity;
     }
 
-    public int getRadius() {
+    public double getRadius() {
         return radius;
     }
     
@@ -32,7 +32,7 @@ public class Star {
         this.luminosity = luminosity;
     }
 
-    public void setRadius(int radius) {
+    public void setRadius(double radius) {
         this.radius = radius;
     }
 
