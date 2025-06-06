@@ -6,7 +6,7 @@ public class PlanetGeneratorRev {
     static final double BOLTZMANN_CONSTANT = 5.670373e-8;
     static final double NEWTON_CONSTANT = 6.6743e-11;
     
-    // kelvin, wattage, standard imperial
+    // kelvin, wattage, kilometers, kilograms
     static final double SOLAR_TEMPERATURE = 5778;
     static final double SOLAR_LUMINOSITY = 3.828e30;
     static final double SOLAR_RADIUS = 695700;
@@ -14,7 +14,7 @@ public class PlanetGeneratorRev {
 
     public static void main(String[] args) {
 
-        Random rand = new Random(2);
+        Random rand = new Random(1);
         Star star = new Star();
 
         for(int i = 0; i < 1; i++) {
@@ -80,21 +80,27 @@ public class PlanetGeneratorRev {
         return lowestRoll;
     }    
 
+    //https://stackoverflow.com/questions/21674599/
+    static double logRand(Random rand, double stdDev, double mean) {
+        double stdNormal   = rand.nextGaussian();
+        double normalValue = stdDev * stdNormal + mean;
+        return Math.exp(normalValue);
+    }
+
     // set the values necessary for a star
     static void doStarThings(Star star, Random rand) {
 
-        star.setTemperature(countLowest(5, 18000-2300, rand)+2300);
+        // luminosity
+        // shoouuuuuld approximate mseq luminosity on a hertzsprung-russel diagram
+        double luminositySeed = weightedRandom(rand, 0.0, 17.0, 3);
+        if(luminositySeed > 5) {
+            star.setLuminosity(logRand(rand, 1, 4.8));
+        } else if(luminositySeed > 11) {
+            star.setLuminosity(logRand(rand, 0.9, 1));
+        } else {
+            star.setLuminosity(logRand(rand, 1.2, -2.5));
+        }
 
-        star.setRadius(((countLowest(3, 600-70, rand)+70)*SOLAR_RADIUS)/100);
-
-        //double luminosity = BOLTZMANN_CONSTANT*((4*Math.PI)*(star.getRadius()*star.getRadius()))*Math.pow(star.getTemp(), 4);
-        double luminosity = Math.pow((star.getRadius()/SOLAR_RADIUS), 2)
-                            *Math.pow((star.getTemp()/SOLAR_TEMPERATURE), 4)
-                            *SOLAR_LUMINOSITY;
-        star.setLuminosity(luminosity);
-
-        double mass = Math.pow(luminosity, 1/3.5); // TODO fix this shit, completely inaccurate and i dont know why
-        star.setMass(mass);
     }
 
     // use some bs to calculate an average surface temp for a planet
